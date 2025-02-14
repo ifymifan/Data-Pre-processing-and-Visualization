@@ -1,0 +1,25 @@
+#include <Arduino.h>
+#include <Arduino_LSM6DSOX.h>
+
+void setup() {
+    Serial.begin(115200);
+    while (!Serial);  // Wait for Serial Monitor to open
+
+    if (!IMU.begin()) {
+        Serial.println("Failed to initialize IMU!");
+        while (1);
+    }
+    Serial.println("Timestamp,Temperature(C)");
+}
+
+void loop() {
+    float temperature;
+    if (IMU.temperatureAvailable()) {
+        temperature = 0;
+        IMU.readTemperatureFloat(temperature);
+        Serial.print(millis());      // Timestamp (ms)
+        Serial.print(",");
+        Serial.println(temperature); // Temperature in Celsius
+    }
+    delay(1000); // Log every second
+}
