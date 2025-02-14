@@ -23,3 +23,471 @@ void loop() {
     }
     delay(1000); // Log every second
 }
+
+
+# Task A2.1 Temperature Logging and Collection
+import pandas
+import matplotlib.pyplot as plt
+
+
+df = pandas.read_csv("temp.csv")
+plt.figure(figsize=(10, 5))
+plt.title("Temperature Plot")
+plt.xlabel("Time")
+plt.ylabel("Temperature")
+
+plt.plot(df['time'],df['temp'], color='orange', label="Temperature")
+plt.legend(loc='upper right')
+plt.savefig("temperature_plot.png")
+plt.show()
+
+
+#Task A2.2: Motion Logging - Acc/Gyr  and Collection
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("acceleration.csv")
+
+# Print the available columns to inspect their names
+print(df.columns)
+
+# Assuming the time column is named "time_s"
+# Change "Time" to the actual name of your time column
+plt.figure(figsize=(10, 5))
+# plt.plot  # This line seems unnecessary and might be causing confusion. Consider removing it
+plt.plot(df["time"], df["Ax"], color="green", label="Ax") # Updated column name here
+plt.plot(df["time"], df["Ay"], color="blue", label="Ay")  # Updated column name here
+plt.plot(df["time"], df["Az"], color="purple", label="Az") # Updated column name here
+plt.plot(df["time"], df["Gx"], color="red", label="Gx")   # Updated column name here
+plt.plot(df["time"], df["Gy"], color="orange", label="Gy") # Updated column name here
+plt.plot(df["time"], df["Gz"], color="yellow", label="Gz") # Updated column name here
+plt.xlabel("Time(seconds)")
+plt.ylabel("Acceleration (m.sq/s.sq) and Gyroscope (rad/s)")
+plt.title("Acceleration and Gyroscope over Time")
+plt.grid(True)
+plt.legend(loc="upper right")
+plt.show()
+
+
+#Task A2.2: Manipulate the data
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+df = pd.read_csv("acceleration.csv")
+
+    # Delete rows where acceleration values are not far from 0
+df = df[(df["Ax"].abs() > 0.3) & (df["Ay"].abs() > 0.2) & (df["Az"].abs() > 0.05)]
+    # Plot the data
+plt.figure(figsize=(10, 5))
+plt.plot(df["time"], df["Ax"], color="green", label="Ax") # Updated column name here
+plt.plot(df["time"], df["Ay"], color="blue", label="Ay")
+plt.plot(df["time"], df["Az"], color="purple", label="Az")
+plt.plot(df["time"], df["Gx"], color="red", label="Gx")
+plt.plot(df["time"], df["Gy"], color="orange", label="Gy")
+plt.plot(df["time"], df["Gz"], color="yellow", label="Gz")
+plt.xlabel("Time(seconds)")
+plt.ylabel("Acceleration (m.sq/s.sq) and Gyroscope (rad/s)")
+plt.title("Acceleration and Gyroscope over Time")
+plt.grid(True)
+plt.legend(loc="upper right")
+plt.show()
+
+
+#Task A2.2: Frozen
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+df = pd.read_csv("IOT_temp.csv")
+df["noted_date"] = pd.to_datetime(df["noted_date"], dayfirst=True)
+df = df[
+        (df["noted_date"] >= pd.to_datetime("2018-12-02"))
+        & (df["noted_date"] <= pd.to_datetime("2018-12-08"))
+    ]
+
+plt.figure(figsize=(10, 5))
+plt.plot(
+df[df["out/in"] == "Out"]["noted_date"],
+        df[df["out/in"] == "Out"]["temp"],
+        color="red",
+        label="Outdoor Temperature",
+    )
+plt.plot(
+        df[df["out/in"] == "In"]["noted_date"],
+        df[df["out/in"] == "In"]["temp"],
+        color="blue",
+        label="Indoor Temperature",
+    )
+plt.xlabel("Date")
+plt.ylabel("Temperature")
+plt.title("Indoor and Outdoor Temperature")
+plt.grid(True)
+plt.legend(loc="upper right")
+plt.show()
+
+
+Task A2.3: Digital Health IoT dataset-Expanded")
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the dataset
+df = pd.read_csv("aw_fb_data.csv")
+
+# Visualize the distribution of calories
+plt.figure(figsize=(10, 6))
+sns.histplot(df['calories'], bins=30, kde=True)
+plt.title("Distribution of Calories")
+plt.xlabel("Calories")
+plt.ylabel("Frequency")
+plt.show()
+
+# Experiment with different transformations
+
+# Log transformation
+df['calories_log'] = np.log1p(df['calories'])
+
+# Square root transformation
+df['calories_sqrt'] = np.sqrt(df['calories'])
+
+# Cube root transformation
+df['calories_cbrt'] = np.cbrt(df['calories'])
+
+# Visualize the transformed distributions
+fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(12, 8))
+
+sns.histplot(df['calories_log'], bins=30, kde=True, ax=axes[0, 0])
+axes[0, 0].set_title("Log Transformation")
+
+sns.histplot(df['calories_sqrt'], bins=30, kde=True, ax=axes[0, 1])
+axes[0, 1].set_title("Square Root Transformation")
+
+sns.histplot(df['calories_cbrt'], bins=30, kde=True, ax=axes[1, 0])
+axes[1, 0].set_title("Cube Root Transformation")
+
+plt.tight_layout()
+plt.show()
+
+# Based on the visualizations, choose the transformation that best
+# approximates a normal distribution (e.g., if the cube root transformation
+# appears closest to a normal distribution, use 'calories_cbrt' for further analysis)
+
+# Assuming cube root transformation is chosen
+df['calories_transformed'] = df['calories_cbrt']
+
+# Visualize the chosen transformed distribution
+plt.figure(figsize=(10, 6))
+sns.histplot(df['calories_transformed'], bins=30, kde=True)
+plt.title("Distribution of Calories (Transformed)")
+plt.xlabel("Transformed Calories")
+plt.ylabel("Frequency")
+plt.show()
+
+print("Task A2.3: Digital Health IoT dataset-limited outcome")
+# Displays same data as the above but in a more limited way
+df["log"] = np.log(df["calories"])
+df["log"].hist()
+plt.show()
+
+def plot_participant_data(ax, x, y_data, labels, colors, title, xlabel, ylabel):
+    ax.stackplot(x, *y_data, labels=labels, colors=colors)
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.legend(loc="upper center")
+    ax.grid(True)
+print(df.head())
+
+
+# Task A2.3 extension
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+df = pd.read_csv("aw_fb_data.csv")
+df_copy = df.groupby(["age", "height", "weight"]).first().reset_index()
+
+_, axs = plt.subplots(2, 2, figsize=(10, 8))
+
+plot_participant_data(
+        axs[0, 0],
+        df_copy.index,
+        [df_copy["age"]],
+        ["Age"],
+        ["red"],
+        "Age of Participants",
+        "Participant",
+        "Age",
+    )
+plot_participant_data(
+        axs[0, 1],
+        df_copy.index,
+        [df_copy["height"]],
+        ["Height"],
+        ["green"],
+        "Height of Participants",
+        "Participant",
+        "Height (cm)",
+    )
+plot_participant_data(
+        axs[1, 0],
+        df_copy.index,
+        [df_copy["weight"]],
+        ["Weight"],
+        ["blue"],
+        "Weight of Participants",
+        "Participant",
+        "Weight (kg)",
+    )
+plot_participant_data(
+        axs[1, 1],
+        np.arange(len(df_copy)),
+        [df_copy["age"], df_copy["height"], df_copy["weight"]],
+        ["Age", "Height", "Weight"],
+        ["red", "green", "blue"],
+        "Age, Height, and Weight of Participants",
+        "Participant",
+        "Age, Height, and Weight",
+    )
+
+plt.tight_layout()
+plt.show()
+def pad_and_stackplot(ax, data, max_len, labels, colors, title, ylabel):
+ padded_data = [np.pad(participant_data, (0, max_len - len(participant_data))) for participant_data in data]
+ ax.stackplot(np.arange(max_len), padded_data, labels=labels, colors=colors)
+ ax.set_title(title)
+ ax.set_ylabel(ylabel)
+ ax.legend(loc="upper right")
+ ax.grid(True)
+
+
+# Task A2.3.III
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load the dataset
+df = pd.read_csv("aw_fb_data.csv")
+
+# Create a unique ID for each participant based on unique features
+df_unique = pd.read_csv("aw_fb_data.csv")
+df_unique["id"] = range(1, len(df_unique) + 1)  # Assign unique IDs to each row
+unique_id_cols = ["age", "height", "weight", "gender"]  # Define unique identifier columns
+df_merged = df.merge(df_unique[unique_id_cols + ["id"]], on=unique_id_cols, how="left")
+
+# Select three participants for analysis
+id1, id2, id3 = 6, 28, 36
+participant_1 = df_merged[df_merged["id"] == id1]
+participant_2 = df_merged[df_merged["id"] == id2]
+participant_3 = df_merged[df_merged["id"] == id3]
+
+# Find the maximum number of data points among the selected participants
+max_len = max(len(participant_1), len(participant_2), len(participant_3))
+
+# Helper function to create stacked plots with padding
+def pad_and_stackplot(ax, data, max_len, labels, colors, title, ylabel):
+    """
+    Creates a stacked plot with padding for unevenly sized data.
+
+    Args:
+        ax: Matplotlib Axes object.
+        data: List of data series (e.g., [participant_1['steps'], ...]).
+        max_len: Maximum length of any data series.
+        labels: List of labels for each data series.
+        colors: List of colors for each data series.
+        title: Title for the plot.
+        ylabel: Label for the y-axis.
+    """
+    padded_data = [np.pad(series, (0, max_len - len(series)), mode='constant') for series in data]
+    ax.stackplot(range(max_len), *padded_data, labels=labels, colors=colors)
+    ax.set_title(title)
+    ax.set_ylabel(ylabel)
+    ax.legend()
+
+# Create subplots for steps, heart rate, and calories
+_, axs = plt.subplots(3, 1, figsize=(15, 8))
+
+# Plot steps for the selected participants
+pad_and_stackplot(
+        axs[0],
+        [participant_1["steps"], participant_2["steps"], participant_3["steps"]],
+        max_len,
+        labels=[f"Participant #{id1}", f"Participant #{id2}", f"Participant #{id3}"],
+        colors=["red", "green", "blue"],
+        title="Steps of First Three Participants",
+        ylabel="Steps",
+    )
+
+# Plot heart rate for the selected participants
+pad_and_stackplot(
+        axs[1],
+        [participant_1["hear_rate"], participant_2["hear_rate"], participant_3["hear_rate"]],
+        max_len,
+        labels=[f"Participant #{id1}", f"Participant #{id2}", f"Participant #{id3}"],
+        colors=["red", "green", "blue"],
+        title="Heart Rate of First Three Participants",
+        ylabel="Heart Rate",
+    )
+
+# Plot calories for the selected participants
+pad_and_stackplot(
+        axs[2],
+        [participant_1["calories"], participant_2["calories"], participant_3["calories"]],
+        max_len,
+        labels=[f"Participant #{id1}", f"Participant #{id2}", f"Participant #{id3}"],
+        colors=["red", "green", "blue"],
+        title="Calories of First Three Participants",
+        ylabel="Calories",
+    )
+
+plt.tight_layout()
+plt.show()
+
+# Function to normalize a column
+def normalize_column(df, column_name):
+    """
+    Normalizes a column in a DataFrame using min-max scaling.
+
+    Args:
+        df: DataFrame.
+        column_name: Name of the column to normalize.
+
+    Returns:
+        DataFrame: DataFrame with normalized column.
+    """
+    min_value = np.min(df[column_name])
+    max_value = np.max(df[column_name])
+    df[f"{column_name}_normalized"] = (df[column_name] - min_value) / (max_value - min_value)
+    return df
+
+# Function to standardize a column
+def standardize_column(df, column_name):
+    """
+    Standardizes a column in a DataFrame using z-score normalization.
+
+    Args:
+        df: DataFrame.
+        column_name: Name of the column to standardize.
+
+    Returns:
+        DataFrame: DataFrame with standardized column.
+    """
+    mean_target = np.mean(df[column_name])
+    sd_target = np.std(df[column_name])
+    df[f"{column_name}_standardized"] = (df[column_name] - mean_target) / (sd_target)
+    return df
+
+#Task A2.3.V - Check output with file name aw_fb_data_Normalized_Standardized.csv
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+def normalize_column(df, column_name):
+    min_value = np.min(df[column_name])
+    max_value = np.max(df[column_name])
+    df[f"{column_name}"] = (df[column_name] - min_value) / (max_value - min_value)
+    return df
+
+
+def standardize_column(df, column_name):
+    mean_target = np.mean(df[column_name])
+    sd_target = np.std(df[column_name])
+    df[f"{column_name}_standardized"] = (df[column_name] - mean_target) / (sd_target)
+    return df
+
+df = pd.read_csv("aw_fb_data.csv")
+
+# Normalize "age", "height", and "weight"
+# df[["age", "height", "weight"]] = MinMaxScaler().fit_transform(df[["age", "height", "weight"]])
+
+df = normalize_column(df, "age") #Fixed: Removed extra space at the beginning
+df = normalize_column(df, "height")
+df = normalize_column(df, "weight")
+
+# Standardize "steps" and "heart rate"
+# df["steps_standardized"] = StandardScaler().fit_transform(df[["steps"]])
+# df["heart_rate_standardized"] = StandardScaler().fit_transform(df[["hear_rate"]])
+
+df = standardize_column(df, "steps")
+df = standardize_column(df, "hear_rate")
+
+df.to_csv("aw_fb_data_Normalized_Standardized.csv", index=False)
+
+
+#Task A2.3.V
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+
+# Load the dataset
+df = pd.read_csv("aw_fb_data.csv")
+
+# Split the data into training, validation, and test sets
+# 1. Split the original data into training (70%) and temporary (30%) sets
+train_df, temp_df = train_test_split(df, test_size=0.3, random_state=42)
+# 2. Split the temporary set into validation (50% of 30% = 15%) and test (50% of 30% = 15%) sets
+validation_df, test_df = train_test_split(temp_df, test_size=0.5, random_state=42)
+
+# Print the sizes of each set
+print(f"Train set size: {len(train_df)}")
+print(f"Validation set size: {len(validation_df)}")
+print(f"Test set size: {len(test_df)}")
+print("              =============")
+
+
+#Task A2.4: Gone with the Wind 💨
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load the dataset
+df = pd.read_csv("Climate2016.csv")
+
+# --- Data Summary ---
+# (You mentioned using functions for data summary, but didn't specify which ones.
+# Here are some common options. Uncomment the ones you want to use.)
+
+# print(df.describe())  # Summary statistics of numerical columns
+# print(df.info())  # Information about columns and data types
+
+# --- Converting to Wind Vector Components ---
+
+# Calculate wind velocity components (X and Y)
+df["windveloX"] = df["windvelo (m/s)"] * np.cos(np.radians(df["winddeg (deg)"]))
+df["windveloY"] = df["windvelo (m/s)"] * np.sin(np.radians(df["winddeg (deg)"]))
+
+# --- Normalizing the Data ---
+
+# Normalize wind velocity components (min-max scaling)
+df["norm_windveloX"] = (df["windveloX"] - df["windveloX"].min()) / (df["windveloX"].max() - df["windveloX"].min())
+df["norm_windveloY"] = (df["windveloY"] - df["windveloY"].min()) / (df["windveloY"].max() - df["windveloY"].min())
+
+# --- Saving the Updated DataFrame ---
+
+# Save the updated DataFrame to a new file to preserve the original data
+df.to_csv("Climate2016_processed.csv", index=False)
+
+# --- Visualizing the Data ---
+
+plt.figure(figsize=(12, 6))
+
+# Plot 1: Original Wind Data (Direction vs. Velocity)
+plt.subplot(1, 2, 1)
+plt.hist2d(df["winddeg (deg)"], df["windvelo (m/s)"], bins=50, vmax=400, cmap='viridis')
+plt.colorbar(label="Frequency")
+plt.xlabel("Wind Direction [deg]")
+plt.ylabel("Wind Velocity [m/s]")
+plt.title("Original Wind Data")
+
+# Plot 2: Normalized Wind Components (X vs. Y)
+plt.subplot(1, 2, 2)
+plt.hist2d(df["norm_windveloX"], df["norm_windveloY"], bins=50, vmax=400, cmap='viridis')
+plt.colorbar(label="Frequency")
+plt.xlabel("Normalized Wind X Velocity")
+plt.ylabel("Normalized Wind Y Velocity")
+plt.title("Normalized Wind Components")
+
+plt.tight_layout()
+plt.show()
